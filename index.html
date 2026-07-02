@@ -20,6 +20,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
   .screen {
     display: none;
@@ -99,6 +100,8 @@
     justify-content: center;
     flex: 1;
     width: 100%;
+    position: relative;
+    z-index: 2;
   }
   .clan-badge {
     color: #a01818;
@@ -106,6 +109,8 @@
     letter-spacing: 4px;
     margin-bottom: 30px;
     text-transform: uppercase;
+    position: relative;
+    z-index: 2;
   }
   .pulse-zone {
     width: 240px;
@@ -120,6 +125,7 @@
     touch-action: none;
     cursor: pointer;
     transition: border-color 0.3s;
+    z-index: 3;
   }
   .pulse-zone.active {
     border-color: #a01818;
@@ -166,6 +172,8 @@
     font-size: 0.95rem;
     max-width: 320px;
     line-height: 1.5;
+    position: relative;
+    z-index: 2;
   }
   .progress-text {
     color: #a01818;
@@ -173,6 +181,8 @@
     letter-spacing: 3px;
     margin-top: 20px;
     min-height: 24px;
+    position: relative;
+    z-index: 2;
   }
   .back-btn {
     margin-top: 30px;
@@ -186,8 +196,86 @@
     cursor: pointer;
     border-radius: 2px;
     text-transform: uppercase;
+    position: relative;
+    z-index: 2;
   }
   .back-btn:hover { color: #d9c9b5; border-color: #a01818; }
+
+  /* ===== BLOOD OVERLAY EFFECT ===== */
+  .blood-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .blood-overlay.active { opacity: 1; }
+
+  .blood-splat {
+    position: absolute;
+    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);
+    transform-origin: center;
+    animation: splatGrow 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+    filter: drop-shadow(0 0 4px rgba(80, 0, 0, 0.6));
+    pointer-events: none;
+  }
+  .blood-splat svg {
+    display: block;
+    overflow: visible;
+  }
+  @keyframes splatGrow {
+    0% {
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    60% {
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.05);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);
+      opacity: 1;
+    }
+  }
+  .blood-splat .droplet {
+    animation: dropletAppear 0.4s ease-out backwards;
+  }
+  @keyframes dropletAppear {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Final red flood */
+  .blood-flood {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center,
+        #a01818 0%,
+        #7a0000 40%,
+        #4a0000 70%,
+        #2a0000 100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    transition: opacity 1.2s ease-in;
+  }
+  .blood-flood.active { opacity: 1; }
+
+  /* Fade transition to result */
+  .transition-veil {
+    position: fixed;
+    inset: 0;
+    background: #0a0000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1001;
+    transition: opacity 0.8s ease-in-out;
+  }
+  .transition-veil.active { opacity: 1; }
 
   /* RESULT SCREEN */
   .power-card {
@@ -199,11 +287,11 @@
     margin: 20px 0;
     border-radius: 3px;
     box-shadow: 0 0 30px rgba(160,24,24,0.2);
-    animation: revealCard 1s ease-out;
+    animation: revealCard 1.2s ease-out;
   }
   @keyframes revealCard {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
   .discipline-label {
     color: #a01818;
@@ -337,6 +425,11 @@
   </div>
   <div id="exhausted-container"></div>
 </div>
+
+<!-- BLOOD EFFECT LAYERS -->
+<div class="blood-overlay" id="blood-overlay"></div>
+<div class="blood-flood" id="blood-flood"></div>
+<div class="transition-veil" id="transition-veil"></div>
 
 <script>
 // =====================================================
@@ -574,10 +667,12 @@ const CLANS = {
 // STATE
 // =====================================================
 let selectedClan = null;
-let excludedPowers = new Set(); // stocke les "Discipline::Pouvoir" déjà refusés
+let excludedPowers = new Set();
 let currentPower = null;
 let holdTimer = null;
 let holdStart = null;
+let splatterInterval = null;
+let splatterCount = 0;
 
 // =====================================================
 // SETUP UI
@@ -615,11 +710,185 @@ function showScreen(id) {
 }
 
 // =====================================================
+// GÉNÉRATION PROCÉDURALE DE TACHES DE SANG (SVG)
+// =====================================================
+
+// Génère un chemin SVG en forme de blob irrégulier
+function generateBlobPath(cx, cy, avgRadius, irregularity, spikiness, numPoints) {
+  const points = [];
+  const angleStep = (Math.PI * 2) / numPoints;
+  let angle = Math.random() * Math.PI * 2;
+
+  for (let i = 0; i < numPoints; i++) {
+    const angleVar = (Math.random() - 0.5) * irregularity * angleStep;
+    const currentAngle = angle + angleVar;
+    const radiusMultiplier = 1 + (Math.random() - 0.3) * spikiness;
+    const r = avgRadius * radiusMultiplier;
+    points.push({
+      x: cx + Math.cos(currentAngle) * r,
+      y: cy + Math.sin(currentAngle) * r
+    });
+    angle += angleStep;
+  }
+
+  let path = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+  for (let i = 0; i < points.length; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % points.length];
+    const p0 = points[(i - 1 + points.length) % points.length];
+    const p3 = points[(i + 2) % points.length];
+    const smooth = 0.35;
+    const c1x = p1.x + (p2.x - p0.x) * smooth;
+    const c1y = p1.y + (p2.y - p0.y) * smooth;
+    const c2x = p2.x - (p3.x - p1.x) * smooth;
+    const c2y = p2.y - (p3.y - p1.y) * smooth;
+    path += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  path += ' Z';
+  return path;
+}
+
+// Génère un chemin de traînée / coulure
+function generateStreakPath(cx, cy, angle, length, width) {
+  const dx = Math.cos(angle);
+  const dy = Math.sin(angle);
+  const px = -dy;
+  const py = dx;
+  const x1 = cx + px * width * 0.5;
+  const y1 = cy + py * width * 0.5;
+  const x2 = cx - px * width * 0.5;
+  const y2 = cy - py * width * 0.5;
+  const tipX = cx + dx * length;
+  const tipY = cy + dy * length;
+  return `M ${x1.toFixed(1)} ${y1.toFixed(1)}
+          Q ${(cx + dx * length * 0.3).toFixed(1)} ${(cy + py * width * 0.3).toFixed(1)},
+            ${tipX.toFixed(1)} ${tipY.toFixed(1)}
+          Q ${(cx + dx * length * 0.3).toFixed(1)} ${(cy - py * width * 0.3).toFixed(1)},
+            ${x2.toFixed(1)} ${y2.toFixed(1)} Z`;
+}
+
+// Construit le SVG complet d'une éclaboussure
+function buildSplatSVG(size) {
+  const viewBox = 400;
+  const cx = viewBox / 2;
+  const cy = viewBox / 2;
+
+  const reds = ['#8b0000', '#7a0000', '#6b0000', '#5a0000', '#a01818', '#4a0000'];
+  const mainColor = reds[Math.floor(Math.random() * 3)];
+  const uid = splatterCount + '_' + Math.floor(Math.random() * 10000);
+
+  let svg = `<svg viewBox="0 0 ${viewBox} ${viewBox}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">`;
+
+  svg += `<defs>
+    <radialGradient id="bloodGrad_${uid}" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#a01818" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="${mainColor}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#3a0000" stop-opacity="0.9"/>
+    </radialGradient>
+    <filter id="bloodBlur_${uid}" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>`;
+
+  svg += `<g filter="url(#bloodBlur_${uid})">`;
+
+  // Blob principal irrégulier
+  const mainRadius = 90 + Math.random() * 30;
+  const mainPath = generateBlobPath(
+    cx, cy,
+    mainRadius,
+    0.5,
+    0.6,
+    14 + Math.floor(Math.random() * 5)
+  );
+  svg += `<path d="${mainPath}" fill="url(#bloodGrad_${uid})"/>`;
+
+  // Sous-blob asymétrique
+  const subAngle = Math.random() * Math.PI * 2;
+  const subDist = mainRadius * 0.7;
+  const subX = cx + Math.cos(subAngle) * subDist;
+  const subY = cy + Math.sin(subAngle) * subDist;
+  const subRadius = mainRadius * (0.35 + Math.random() * 0.25);
+  const subPath = generateBlobPath(subX, subY, subRadius, 0.6, 0.7, 10);
+  svg += `<path d="${subPath}" fill="${mainColor}" opacity="0.95"/>`;
+
+  // Traînées / coulures
+  const streakCount = 3 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < streakCount; i++) {
+    const sAngle = Math.random() * Math.PI * 2;
+    const sLength = mainRadius * (0.8 + Math.random() * 1.4);
+    const sWidth = 8 + Math.random() * 18;
+    const sStartX = cx + Math.cos(sAngle) * mainRadius * 0.85;
+    const sStartY = cy + Math.sin(sAngle) * mainRadius * 0.85;
+    const streakPath = generateStreakPath(sStartX, sStartY, sAngle, sLength, sWidth);
+    const streakColor = reds[Math.floor(Math.random() * reds.length)];
+    svg += `<path d="${streakPath}" fill="${streakColor}" opacity="${(0.7 + Math.random() * 0.3).toFixed(2)}"/>`;
+  }
+
+  svg += `</g>`;
+
+  // Satellites (droplets)
+  const dropletCount = 8 + Math.floor(Math.random() * 14);
+  for (let i = 0; i < dropletCount; i++) {
+    const dAngle = Math.random() * Math.PI * 2;
+    const dDist = mainRadius * (1.1 + Math.random() * 1.6);
+    const dx = cx + Math.cos(dAngle) * dDist;
+    const dy = cy + Math.sin(dAngle) * dDist;
+    const dSize = 3 + Math.random() * 22;
+    const dColor = reds[Math.floor(Math.random() * reds.length)];
+    if (Math.random() > 0.6) {
+      const dPath = generateBlobPath(dx, dy, dSize, 0.4, 0.5, 8);
+      svg += `<path class="droplet" d="${dPath}" fill="${dColor}" opacity="${(0.75 + Math.random() * 0.25).toFixed(2)}" style="animation-delay:${(0.1 + Math.random() * 0.5).toFixed(2)}s;transform-origin:${dx.toFixed(1)}px ${dy.toFixed(1)}px"/>`;
+    } else {
+      svg += `<circle class="droplet" cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="${dSize.toFixed(1)}" fill="${dColor}" opacity="${(0.75 + Math.random() * 0.25).toFixed(2)}" style="animation-delay:${(0.1 + Math.random() * 0.5).toFixed(2)}s;transform-origin:${dx.toFixed(1)}px ${dy.toFixed(1)}px"/>`;
+    }
+  }
+
+  // Micro-projections
+  const microCount = 6 + Math.floor(Math.random() * 10);
+  for (let i = 0; i < microCount; i++) {
+    const mAngle = Math.random() * Math.PI * 2;
+    const mDist = mainRadius * (2.2 + Math.random() * 1.5);
+    const mx = cx + Math.cos(mAngle) * mDist;
+    const my = cy + Math.sin(mAngle) * mDist;
+    const mSize = 1 + Math.random() * 4;
+    svg += `<circle class="droplet" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="${mSize.toFixed(1)}" fill="${reds[Math.floor(Math.random() * reds.length)]}" opacity="${(0.6 + Math.random() * 0.3).toFixed(2)}" style="animation-delay:${(0.3 + Math.random() * 0.6).toFixed(2)}s;transform-origin:${mx.toFixed(1)}px ${my.toFixed(1)}px"/>`;
+  }
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function spawnSplat() {
+  const splat = document.createElement('div');
+  splat.className = 'blood-splat';
+
+  const x = Math.random() * 100;
+  const y = Math.random() * 100;
+
+  const progress = Math.min(1, splatterCount / 12);
+  const baseSize = 140 + progress * 480;
+  const size = baseSize + Math.random() * 220;
+
+  splat.style.left = x + 'vw';
+  splat.style.top = y + 'vh';
+  splat.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+
+  splat.innerHTML = buildSplatSVG(size);
+
+  bloodOverlay.appendChild(splat);
+  splatterCount++;
+}
+
+// =====================================================
 // PULSE / RITUAL
 // =====================================================
 const pulseZone = document.getElementById('pulse-zone');
 const pulseInner = document.getElementById('pulse-inner');
 const progressText = document.getElementById('progress-text');
+const bloodOverlay = document.getElementById('blood-overlay');
+const bloodFlood = document.getElementById('blood-flood');
+const transitionVeil = document.getElementById('transition-veil');
 
 function startHold(e) {
   e.preventDefault();
@@ -627,8 +896,26 @@ function startHold(e) {
   pulseZone.classList.add('active');
   pulseInner.innerHTML = 'Ne bougez<br>plus...';
   holdStart = Date.now();
+  splatterCount = 0;
+
+  bloodOverlay.innerHTML = '';
+  bloodOverlay.classList.add('active');
+
+  spawnSplat();
+  scheduleNextSplat(400);
+
   updateProgress();
   holdTimer = setInterval(updateProgress, 100);
+}
+
+function scheduleNextSplat(delay) {
+  splatterInterval = setTimeout(() => {
+    if (!holdTimer) return;
+    spawnSplat();
+    const elapsed = (Date.now() - holdStart) / 1000;
+    const nextDelay = Math.max(150, 500 - elapsed * 80);
+    scheduleNextSplat(nextDelay);
+  }, delay);
 }
 
 function updateProgress() {
@@ -639,17 +926,42 @@ function updateProgress() {
   } else {
     clearInterval(holdTimer);
     holdTimer = null;
+    clearTimeout(splatterInterval);
     progressText.textContent = '';
-    revealPower();
+    triggerFlood();
   }
+}
+
+function triggerFlood() {
+  for (let i = 0; i < 6; i++) {
+    setTimeout(spawnSplat, i * 80);
+  }
+  setTimeout(() => {
+    bloodFlood.classList.add('active');
+  }, 600);
+  setTimeout(() => {
+    transitionVeil.classList.add('active');
+  }, 1600);
+  setTimeout(() => {
+    revealPower();
+    bloodOverlay.classList.remove('active');
+    bloodOverlay.innerHTML = '';
+    bloodFlood.classList.remove('active');
+    setTimeout(() => transitionVeil.classList.remove('active'), 50);
+  }, 2400);
 }
 
 function cancelHold(e) {
   if (holdTimer) {
     clearInterval(holdTimer);
     holdTimer = null;
+    clearTimeout(splatterInterval);
     progressText.textContent = 'Le rituel est interrompu...';
-    setTimeout(resetPulse, 1500);
+    bloodOverlay.classList.remove('active');
+    setTimeout(() => {
+      bloodOverlay.innerHTML = '';
+      resetPulse();
+    }, 800);
   }
 }
 
@@ -658,6 +970,11 @@ function resetPulse() {
   pulseInner.innerHTML = 'Posez votre<br>doigt ici';
   progressText.textContent = '';
   if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+  if (splatterInterval) { clearTimeout(splatterInterval); splatterInterval = null; }
+  bloodOverlay.classList.remove('active');
+  bloodOverlay.innerHTML = '';
+  bloodFlood.classList.remove('active');
+  transitionVeil.classList.remove('active');
 }
 
 pulseZone.addEventListener('touchstart', startHold, { passive: false });
@@ -686,12 +1003,11 @@ function getAvailablePowers() {
 function revealPower() {
   const available = getAvailablePowers();
   if (available.length === 0) {
-    // Tous les pouvoirs ont été refusés
     showScreen('screen-result');
     document.getElementById('clan-badge-result').textContent = selectedClan + ' — ' + CLANS[selectedClan].tagline;
     document.getElementById('power-card').style.display = 'none';
     document.getElementById('reroll-btn').style.display = 'none';
-    document.getElementById('exhausted-container').innerHTML = 
+    document.getElementById('exhausted-container').innerHTML =
       '<div class="exhausted-msg">Vous connaissez déjà tous les pouvoirs de niveau 1 accessibles à votre clan. Votre Sang est riche en expérience.</div>';
     return;
   }
