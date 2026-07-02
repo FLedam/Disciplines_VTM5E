@@ -36,243 +36,121 @@
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
   h1 {
-    font-family: 'Georgia', serif;
-    font-size: 1.9rem;
-    color: #a01818;
-    text-align: center;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
-    text-shadow: 0 0 12px rgba(160,24,24,0.4);
-    font-weight: normal;
+    font-size: 1.9rem; color: #a01818; text-align: center;
+    letter-spacing: 3px; margin-bottom: 8px;
+    text-shadow: 0 0 12px rgba(160,24,24,0.4); font-weight: normal;
   }
   h2 {
-    font-size: 1.3rem;
-    color: #c0a878;
-    text-align: center;
-    margin: 16px 0 20px;
-    letter-spacing: 2px;
-    font-weight: normal;
-    font-style: italic;
+    font-size: 1.3rem; color: #c0a878; text-align: center;
+    margin: 16px 0 20px; letter-spacing: 2px; font-weight: normal; font-style: italic;
   }
   .subtitle {
-    text-align: center;
-    color: #8a7358;
-    font-style: italic;
-    margin-bottom: 30px;
-    font-size: 0.95rem;
-    max-width: 480px;
+    text-align: center; color: #8a7358; font-style: italic;
+    margin-bottom: 30px; font-size: 0.95rem; max-width: 480px;
   }
 
   /* CLAN SELECTION */
   .clan-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-    max-width: 500px;
-    margin-top: 10px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    width: 100%; max-width: 500px; margin-top: 10px;
   }
   .clan-btn {
     background: linear-gradient(180deg, #1a0808 0%, #0f0303 100%);
-    border: 1px solid #3a1010;
-    color: #d9c9b5;
-    padding: 18px 12px;
-    font-family: inherit;
-    font-size: 1.05rem;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s;
-    border-radius: 2px;
-    text-transform: uppercase;
+    border: 1px solid #3a1010; color: #d9c9b5;
+    padding: 18px 12px; font-family: inherit; font-size: 1.05rem;
+    letter-spacing: 2px; cursor: pointer; transition: all 0.3s;
+    border-radius: 2px; text-transform: uppercase;
   }
   .clan-btn:hover, .clan-btn:active {
     background: linear-gradient(180deg, #3a0808 0%, #1a0303 100%);
-    border-color: #a01818;
-    color: #f0d8b8;
+    border-color: #a01818; color: #f0d8b8;
     box-shadow: 0 0 15px rgba(160,24,24,0.4);
   }
 
   /* RITUAL SCREEN */
   .ritual-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    width: 100%;
-    position: relative;
-    z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; flex: 1; width: 100%;
+    position: relative; z-index: 2;
   }
   .clan-badge {
-    color: #a01818;
-    font-size: 0.85rem;
-    letter-spacing: 4px;
-    margin-bottom: 30px;
-    text-transform: uppercase;
-    position: relative;
-    z-index: 2;
+    color: #a01818; font-size: 0.85rem; letter-spacing: 4px;
+    margin-bottom: 30px; text-transform: uppercase;
+    position: relative; z-index: 2;
   }
   .pulse-zone {
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
+    width: 240px; height: 240px; border-radius: 50%;
     background: radial-gradient(circle, #2a0505 0%, #100202 70%, transparent 100%);
     border: 2px solid #3a1010;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    touch-action: none;
-    cursor: pointer;
-    transition: border-color 0.3s;
-    z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; touch-action: none; cursor: pointer;
+    transition: border-color 0.3s; z-index: 3;
   }
-  .pulse-zone.active {
-    border-color: #a01818;
-  }
+  .pulse-zone.active { border-color: #a01818; }
   .pulse-zone.active::before,
   .pulse-zone.active::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
     border: 2px solid #a01818;
     animation: heartbeat 1s ease-out infinite;
   }
-  .pulse-zone.active::after {
-    animation-delay: 0.4s;
-  }
+  .pulse-zone.active::after { animation-delay: 0.4s; }
   @keyframes heartbeat {
     0% { transform: scale(1); opacity: 0.9; box-shadow: 0 0 20px rgba(160,24,24,0.5); }
     50% { transform: scale(1.15); opacity: 0.6; box-shadow: 0 0 40px rgba(160,24,24,0.7); }
     100% { transform: scale(1.35); opacity: 0; box-shadow: 0 0 60px rgba(160,24,24,0); }
   }
   .pulse-inner {
-    color: #c0a878;
-    text-align: center;
-    padding: 20px;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    z-index: 2;
-    pointer-events: none;
+    color: #c0a878; text-align: center; padding: 20px;
+    font-size: 0.9rem; letter-spacing: 1px;
+    z-index: 2; pointer-events: none;
   }
   .pulse-zone.active .pulse-inner {
-    color: #f0d8b8;
-    animation: innerPulse 1s ease-in-out infinite;
+    color: #f0d8b8; animation: innerPulse 1s ease-in-out infinite;
   }
   @keyframes innerPulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.08); }
   }
   .instruction {
-    color: #8a7358;
-    text-align: center;
-    margin-top: 40px;
-    font-style: italic;
-    font-size: 0.95rem;
-    max-width: 320px;
-    line-height: 1.5;
-    position: relative;
-    z-index: 2;
+    color: #8a7358; text-align: center; margin-top: 40px;
+    font-style: italic; font-size: 0.95rem; max-width: 320px;
+    line-height: 1.5; position: relative; z-index: 2;
   }
   .progress-text {
-    color: #a01818;
-    font-size: 1.1rem;
-    letter-spacing: 3px;
-    margin-top: 20px;
-    min-height: 24px;
-    position: relative;
-    z-index: 2;
+    color: #a01818; font-size: 1.1rem; letter-spacing: 3px;
+    margin-top: 20px; min-height: 24px;
+    position: relative; z-index: 2;
   }
   .back-btn {
-    margin-top: 30px;
-    background: transparent;
-    border: 1px solid #3a1010;
-    color: #8a7358;
-    padding: 10px 20px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border-radius: 2px;
-    text-transform: uppercase;
-    position: relative;
-    z-index: 2;
+    margin-top: 30px; background: transparent;
+    border: 1px solid #3a1010; color: #8a7358;
+    padding: 10px 20px; font-family: inherit; font-size: 0.85rem;
+    letter-spacing: 2px; cursor: pointer; border-radius: 2px;
+    text-transform: uppercase; position: relative; z-index: 2;
   }
   .back-btn:hover { color: #d9c9b5; border-color: #a01818; }
 
-  /* ===== BLOOD OVERLAY EFFECT ===== */
-  .blood-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 999;
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.3s;
+  /* ===== BLOOD CANVAS ===== */
+  .blood-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 999;
+    opacity: 0; transition: opacity 0.3s;
+    will-change: opacity;
   }
-  .blood-overlay.active { opacity: 1; }
+  .blood-canvas.active { opacity: 1; }
 
-  .blood-splat {
-    position: absolute;
-    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);
-    transform-origin: center;
-    animation: splatGrow 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-    filter: drop-shadow(0 0 4px rgba(80, 0, 0, 0.6));
-    pointer-events: none;
-  }
-  .blood-splat svg {
-    display: block;
-    overflow: visible;
-  }
-  @keyframes splatGrow {
-    0% {
-      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0);
-      opacity: 0;
-    }
-    15% {
-      opacity: 1;
-    }
-    60% {
-      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.05);
-    }
-    100% {
-      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);
-      opacity: 1;
-    }
-  }
-  .blood-splat .droplet {
-    animation: dropletAppear 0.4s ease-out backwards;
-  }
-  @keyframes dropletAppear {
-    from { opacity: 0; transform: scale(0.3); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  /* Final red flood */
   .blood-flood {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: radial-gradient(ellipse at center,
-        #a01818 0%,
-        #7a0000 40%,
-        #4a0000 70%,
-        #2a0000 100%);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1000;
+        #a01818 0%, #7a0000 40%, #4a0000 70%, #2a0000 100%);
+    opacity: 0; pointer-events: none; z-index: 1000;
     transition: opacity 1.2s ease-in;
   }
   .blood-flood.active { opacity: 1; }
 
-  /* Fade transition to result */
   .transition-veil {
-    position: fixed;
-    inset: 0;
-    background: #0a0000;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1001;
+    position: fixed; inset: 0; background: #0a0000;
+    opacity: 0; pointer-events: none; z-index: 1001;
     transition: opacity 0.8s ease-in-out;
   }
   .transition-veil.active { opacity: 1; }
@@ -280,13 +158,9 @@
   /* RESULT SCREEN */
   .power-card {
     background: linear-gradient(180deg, #1a0505 0%, #0a0101 100%);
-    border: 1px solid #3a1010;
-    padding: 24px 20px;
-    width: 100%;
-    max-width: 520px;
-    margin: 20px 0;
-    border-radius: 3px;
-    box-shadow: 0 0 30px rgba(160,24,24,0.2);
+    border: 1px solid #3a1010; padding: 24px 20px;
+    width: 100%; max-width: 520px; margin: 20px 0;
+    border-radius: 3px; box-shadow: 0 0 30px rgba(160,24,24,0.2);
     animation: revealCard 1.2s ease-out;
   }
   @keyframes revealCard {
@@ -294,27 +168,16 @@
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
   .discipline-label {
-    color: #a01818;
-    font-size: 0.8rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 6px;
+    color: #a01818; font-size: 0.8rem; letter-spacing: 4px;
+    text-transform: uppercase; text-align: center; margin-bottom: 6px;
   }
   .power-name {
-    color: #f0d8b8;
-    font-size: 1.6rem;
-    text-align: center;
-    letter-spacing: 2px;
-    margin-bottom: 4px;
-    font-style: italic;
+    color: #f0d8b8; font-size: 1.6rem; text-align: center;
+    letter-spacing: 2px; margin-bottom: 4px; font-style: italic;
   }
   .power-level {
-    color: #8a7358;
-    text-align: center;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
+    color: #8a7358; text-align: center; font-size: 0.85rem;
+    letter-spacing: 2px; margin-bottom: 20px;
   }
   .separator {
     height: 1px;
@@ -322,67 +185,37 @@
     margin: 16px 0;
   }
   .power-desc {
-    color: #d9c9b5;
-    line-height: 1.6;
-    font-size: 0.95rem;
-    margin-bottom: 16px;
-    text-align: justify;
+    color: #d9c9b5; line-height: 1.6; font-size: 0.95rem;
+    margin-bottom: 16px; text-align: justify;
   }
-  .power-detail {
-    margin: 10px 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-  .power-detail strong {
-    color: #c0a878;
-    letter-spacing: 1px;
-  }
+  .power-detail { margin: 10px 0; font-size: 0.9rem; line-height: 1.5; }
+  .power-detail strong { color: #c0a878; letter-spacing: 1px; }
   .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 520px;
-    margin-top: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    width: 100%; max-width: 520px; margin-top: 20px;
   }
   .action-btn {
     background: linear-gradient(180deg, #2a0808 0%, #150303 100%);
-    border: 1px solid #a01818;
-    color: #d9c9b5;
-    padding: 14px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border-radius: 2px;
-    text-transform: uppercase;
-    transition: all 0.3s;
+    border: 1px solid #a01818; color: #d9c9b5;
+    padding: 14px; font-family: inherit; font-size: 0.95rem;
+    letter-spacing: 2px; cursor: pointer; border-radius: 2px;
+    text-transform: uppercase; transition: all 0.3s;
   }
   .action-btn:hover, .action-btn:active {
     background: linear-gradient(180deg, #4a0808 0%, #2a0303 100%);
     box-shadow: 0 0 15px rgba(160,24,24,0.5);
   }
   .action-btn.secondary {
-    background: transparent;
-    border-color: #3a1010;
-    color: #8a7358;
+    background: transparent; border-color: #3a1010; color: #8a7358;
   }
   .exhausted-msg {
-    color: #a01818;
-    text-align: center;
-    font-style: italic;
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #3a1010;
-    max-width: 520px;
-    width: 100%;
+    color: #a01818; text-align: center; font-style: italic;
+    margin-top: 20px; padding: 20px; border: 1px solid #3a1010;
+    max-width: 520px; width: 100%;
   }
   .ornament {
-    text-align: center;
-    color: #3a1010;
-    font-size: 1.5rem;
-    margin: 20px 0 10px;
-    letter-spacing: 8px;
+    text-align: center; color: #3a1010; font-size: 1.5rem;
+    margin: 20px 0 10px; letter-spacing: 8px;
   }
 </style>
 </head>
@@ -427,21 +260,18 @@
 </div>
 
 <!-- BLOOD EFFECT LAYERS -->
-<div class="blood-overlay" id="blood-overlay"></div>
+<canvas class="blood-canvas" id="blood-canvas"></canvas>
 <div class="blood-flood" id="blood-flood"></div>
 <div class="transition-veil" id="transition-veil"></div>
 
 <script>
 // =====================================================
 // DATA — Clans, Disciplines & Pouvoirs de niveau 1
-// Basé sur Vampire: la Mascarade 5e édition
 // =====================================================
-
 const DISCIPLINES = {
   "Animalisme": {
     surnoms: "faire sa princesse Disney, dressage, Bestiae sermo",
-    resonance: "Sang animal",
-    type: "Mentale",
+    resonance: "Sang animal", type: "Mentale",
     powers: [
       {
         name: "Lier le Famulus",
@@ -461,8 +291,7 @@ const DISCIPLINES = {
   },
   "Auspex": {
     surnoms: "voyeurisme, divination, augure, Anima visus",
-    resonance: "Flegmatique",
-    type: "Mentale",
+    resonance: "Flegmatique", type: "Mentale",
     powers: [
       {
         name: "Sens accrus",
@@ -482,8 +311,7 @@ const DISCIPLINES = {
   },
   "Célérité": {
     surnoms: "mettre la gomme, échappée belle, Velocitas",
-    resonance: "Bilieuse",
-    type: "Physique",
+    resonance: "Bilieuse", type: "Physique",
     powers: [
       {
         name: "Grâce féline",
@@ -503,8 +331,7 @@ const DISCIPLINES = {
   },
   "Domination": {
     surnoms: "charmer les serpents, hypnose, Mentis imperium",
-    resonance: "Flegmatique",
-    type: "Mentale",
+    resonance: "Flegmatique", type: "Mentale",
     powers: [
       {
         name: "Brouillage mémoriel",
@@ -524,8 +351,7 @@ const DISCIPLINES = {
   },
   "Force d'âme": {
     surnoms: "fortification, peau de pierre, Resistentia",
-    resonance: "Atrabilaire",
-    type: "Physique",
+    resonance: "Atrabilaire", type: "Physique",
     powers: [
       {
         name: "Résilience",
@@ -545,8 +371,7 @@ const DISCIPLINES = {
   },
   "Occultation": {
     surnoms: "mode furtif, sous couverture, voile, Occulto",
-    resonance: "Atrabilaire",
-    type: "Mentale",
+    resonance: "Atrabilaire", type: "Mentale",
     powers: [
       {
         name: "Manteau d'ombre",
@@ -566,8 +391,7 @@ const DISCIPLINES = {
   },
   "Présence": {
     surnoms: "vedettariat, subjugation, Sublimitas",
-    resonance: "Sanguine",
-    type: "Mentale",
+    resonance: "Sanguine", type: "Mentale",
     powers: [
       {
         name: "Intimider",
@@ -587,8 +411,7 @@ const DISCIPLINES = {
   },
   "Protéisme": {
     surnoms: "évolution, morphose, Mutatio",
-    resonance: "Sang d'animal",
-    type: "Physique",
+    resonance: "Sang d'animal", type: "Physique",
     powers: [
       {
         name: "Poids plume",
@@ -608,8 +431,7 @@ const DISCIPLINES = {
   },
   "Puissance": {
     surnoms: "don d'Héraclès, force du sang, Percutio",
-    resonance: "Bilieuse",
-    type: "Physique",
+    resonance: "Bilieuse", type: "Physique",
     powers: [
       {
         name: "Bond surhumain",
@@ -629,8 +451,7 @@ const DISCIPLINES = {
   },
   "Sorcellerie du sang": {
     surnoms: "Hocus pocus, thaumaturgie, Quietus",
-    resonance: "Sanguine",
-    type: "Sorcellerie",
+    resonance: "Sanguine", type: "Sorcellerie",
     powers: [
       {
         name: "Goût du sang",
@@ -710,28 +531,46 @@ function showScreen(id) {
 }
 
 // =====================================================
-// GÉNÉRATION PROCÉDURALE DE TACHES DE SANG (SVG)
+// MOTEUR CANVAS BLOOD — performant
 // =====================================================
+const bloodCanvas = document.getElementById('blood-canvas');
+const bctx = bloodCanvas.getContext('2d');
+const committedCanvas = document.createElement('canvas');
+const cctx = committedCanvas.getContext('2d');
+let DPR = Math.min(window.devicePixelRatio || 1, 2);
+const animatingSplats = [];
+let rafRunning = false;
 
-// Génère un chemin SVG en forme de blob irrégulier
-function generateBlobPath(cx, cy, avgRadius, irregularity, spikiness, numPoints) {
+function resizeBloodCanvas() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  bloodCanvas.width = w * DPR;
+  bloodCanvas.height = h * DPR;
+  bloodCanvas.style.width = w + 'px';
+  bloodCanvas.style.height = h + 'px';
+  committedCanvas.width = w * DPR;
+  committedCanvas.height = h * DPR;
+  bctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  cctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resizeBloodCanvas();
+window.addEventListener('resize', resizeBloodCanvas);
+
+// ---- Génération de blob irrégulier sur un contexte 2D ----
+function drawBlob(ctx, cx, cy, avgRadius, irregularity, spikiness, numPoints, fillStyle) {
   const points = [];
   const angleStep = (Math.PI * 2) / numPoints;
   let angle = Math.random() * Math.PI * 2;
-
   for (let i = 0; i < numPoints; i++) {
     const angleVar = (Math.random() - 0.5) * irregularity * angleStep;
     const currentAngle = angle + angleVar;
-    const radiusMultiplier = 1 + (Math.random() - 0.3) * spikiness;
-    const r = avgRadius * radiusMultiplier;
-    points.push({
-      x: cx + Math.cos(currentAngle) * r,
-      y: cy + Math.sin(currentAngle) * r
-    });
+    const r = avgRadius * (1 + (Math.random() - 0.3) * spikiness);
+    points.push({ x: cx + Math.cos(currentAngle) * r, y: cy + Math.sin(currentAngle) * r });
     angle += angleStep;
   }
-
-  let path = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
   for (let i = 0; i < points.length; i++) {
     const p1 = points[i];
     const p2 = points[(i + 1) % points.length];
@@ -742,142 +581,204 @@ function generateBlobPath(cx, cy, avgRadius, irregularity, spikiness, numPoints)
     const c1y = p1.y + (p2.y - p0.y) * smooth;
     const c2x = p2.x - (p3.x - p1.x) * smooth;
     const c2y = p2.y - (p3.y - p1.y) * smooth;
-    path += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    ctx.bezierCurveTo(c1x, c1y, c2x, c2y, p2.x, p2.y);
   }
-  path += ' Z';
-  return path;
+  ctx.closePath();
+  ctx.fillStyle = fillStyle;
+  ctx.fill();
 }
 
-// Génère un chemin de traînée / coulure
-function generateStreakPath(cx, cy, angle, length, width) {
+function drawStreak(ctx, cx, cy, angle, length, width, color, alpha) {
   const dx = Math.cos(angle);
   const dy = Math.sin(angle);
   const px = -dy;
   const py = dx;
-  const x1 = cx + px * width * 0.5;
-  const y1 = cy + py * width * 0.5;
-  const x2 = cx - px * width * 0.5;
-  const y2 = cy - py * width * 0.5;
-  const tipX = cx + dx * length;
-  const tipY = cy + dy * length;
-  return `M ${x1.toFixed(1)} ${y1.toFixed(1)}
-          Q ${(cx + dx * length * 0.3).toFixed(1)} ${(cy + py * width * 0.3).toFixed(1)},
-            ${tipX.toFixed(1)} ${tipY.toFixed(1)}
-          Q ${(cx + dx * length * 0.3).toFixed(1)} ${(cy - py * width * 0.3).toFixed(1)},
-            ${x2.toFixed(1)} ${y2.toFixed(1)} Z`;
+  ctx.beginPath();
+  ctx.moveTo(cx + px * width * 0.5, cy + py * width * 0.5);
+  ctx.quadraticCurveTo(
+    cx + dx * length * 0.35 + px * width * 0.4,
+    cy + dy * length * 0.35 + py * width * 0.4,
+    cx + dx * length, cy + dy * length
+  );
+  ctx.quadraticCurveTo(
+    cx + dx * length * 0.35 - px * width * 0.4,
+    cy + dy * length * 0.35 - py * width * 0.4,
+    cx - px * width * 0.5, cy - py * width * 0.5
+  );
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = alpha;
+  ctx.fill();
+  ctx.globalAlpha = 1;
 }
 
-// Construit le SVG complet d'une éclaboussure
-function buildSplatSVG(size) {
-  const viewBox = 400;
-  const cx = viewBox / 2;
-  const cy = viewBox / 2;
+// ---- Pré-rendu d'une tache sur un canvas offscreen ----
+function createSplatOffscreen(size) {
+  const off = document.createElement('canvas');
+  off.width = size;
+  off.height = size;
+  const c = off.getContext('2d');
+  const cx = size / 2;
+  const cy = size / 2;
 
   const reds = ['#8b0000', '#7a0000', '#6b0000', '#5a0000', '#a01818', '#4a0000'];
   const mainColor = reds[Math.floor(Math.random() * 3)];
-  const uid = splatterCount + '_' + Math.floor(Math.random() * 10000);
 
-  let svg = `<svg viewBox="0 0 ${viewBox} ${viewBox}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">`;
-
-  svg += `<defs>
-    <radialGradient id="bloodGrad_${uid}" cx="45%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#a01818" stop-opacity="0.95"/>
-      <stop offset="60%" stop-color="${mainColor}" stop-opacity="1"/>
-      <stop offset="100%" stop-color="#3a0000" stop-opacity="0.9"/>
-    </radialGradient>
-    <filter id="bloodBlur_${uid}" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="1.5"/>
-    </filter>
-  </defs>`;
-
-  svg += `<g filter="url(#bloodBlur_${uid})">`;
-
-  // Blob principal irrégulier
-  const mainRadius = 90 + Math.random() * 30;
-  const mainPath = generateBlobPath(
-    cx, cy,
-    mainRadius,
-    0.5,
-    0.6,
-    14 + Math.floor(Math.random() * 5)
+  // Blob principal avec gradient
+  const mainRadius = size * (0.22 + Math.random() * 0.06);
+  const grad = c.createRadialGradient(
+    cx - mainRadius * 0.15, cy - mainRadius * 0.2, mainRadius * 0.1,
+    cx, cy, mainRadius
   );
-  svg += `<path d="${mainPath}" fill="url(#bloodGrad_${uid})"/>`;
+  grad.addColorStop(0, 'rgba(160,24,24,0.95)');
+  grad.addColorStop(0.6, mainColor);
+  grad.addColorStop(1, 'rgba(58,0,0,0.9)');
+  drawBlob(c, cx, cy, mainRadius, 0.5, 0.6, 14 + Math.floor(Math.random() * 5), grad);
 
   // Sous-blob asymétrique
   const subAngle = Math.random() * Math.PI * 2;
   const subDist = mainRadius * 0.7;
-  const subX = cx + Math.cos(subAngle) * subDist;
-  const subY = cy + Math.sin(subAngle) * subDist;
-  const subRadius = mainRadius * (0.35 + Math.random() * 0.25);
-  const subPath = generateBlobPath(subX, subY, subRadius, 0.6, 0.7, 10);
-  svg += `<path d="${subPath}" fill="${mainColor}" opacity="0.95"/>`;
+  drawBlob(
+    c,
+    cx + Math.cos(subAngle) * subDist,
+    cy + Math.sin(subAngle) * subDist,
+    mainRadius * (0.35 + Math.random() * 0.25),
+    0.6, 0.7, 10, mainColor
+  );
 
   // Traînées / coulures
   const streakCount = 3 + Math.floor(Math.random() * 4);
   for (let i = 0; i < streakCount; i++) {
     const sAngle = Math.random() * Math.PI * 2;
     const sLength = mainRadius * (0.8 + Math.random() * 1.4);
-    const sWidth = 8 + Math.random() * 18;
-    const sStartX = cx + Math.cos(sAngle) * mainRadius * 0.85;
-    const sStartY = cy + Math.sin(sAngle) * mainRadius * 0.85;
-    const streakPath = generateStreakPath(sStartX, sStartY, sAngle, sLength, sWidth);
-    const streakColor = reds[Math.floor(Math.random() * reds.length)];
-    svg += `<path d="${streakPath}" fill="${streakColor}" opacity="${(0.7 + Math.random() * 0.3).toFixed(2)}"/>`;
+    const sWidth = size * (0.02 + Math.random() * 0.04);
+    drawStreak(
+      c,
+      cx + Math.cos(sAngle) * mainRadius * 0.85,
+      cy + Math.sin(sAngle) * mainRadius * 0.85,
+      sAngle, sLength, sWidth,
+      reds[Math.floor(Math.random() * reds.length)],
+      0.7 + Math.random() * 0.3
+    );
   }
 
-  svg += `</g>`;
-
-  // Satellites (droplets)
-  const dropletCount = 8 + Math.floor(Math.random() * 14);
+  // Satellites
+  const dropletCount = 8 + Math.floor(Math.random() * 12);
   for (let i = 0; i < dropletCount; i++) {
     const dAngle = Math.random() * Math.PI * 2;
     const dDist = mainRadius * (1.1 + Math.random() * 1.6);
     const dx = cx + Math.cos(dAngle) * dDist;
     const dy = cy + Math.sin(dAngle) * dDist;
-    const dSize = 3 + Math.random() * 22;
+    const dSize = size * (0.008 + Math.random() * 0.045);
     const dColor = reds[Math.floor(Math.random() * reds.length)];
+    c.globalAlpha = 0.75 + Math.random() * 0.25;
     if (Math.random() > 0.6) {
-      const dPath = generateBlobPath(dx, dy, dSize, 0.4, 0.5, 8);
-      svg += `<path class="droplet" d="${dPath}" fill="${dColor}" opacity="${(0.75 + Math.random() * 0.25).toFixed(2)}" style="animation-delay:${(0.1 + Math.random() * 0.5).toFixed(2)}s;transform-origin:${dx.toFixed(1)}px ${dy.toFixed(1)}px"/>`;
+      drawBlob(c, dx, dy, dSize, 0.4, 0.5, 8, dColor);
     } else {
-      svg += `<circle class="droplet" cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="${dSize.toFixed(1)}" fill="${dColor}" opacity="${(0.75 + Math.random() * 0.25).toFixed(2)}" style="animation-delay:${(0.1 + Math.random() * 0.5).toFixed(2)}s;transform-origin:${dx.toFixed(1)}px ${dy.toFixed(1)}px"/>`;
+      c.fillStyle = dColor;
+      c.beginPath();
+      c.arc(dx, dy, dSize, 0, Math.PI * 2);
+      c.fill();
     }
+    c.globalAlpha = 1;
   }
 
   // Micro-projections
-  const microCount = 6 + Math.floor(Math.random() * 10);
+  const microCount = 6 + Math.floor(Math.random() * 8);
   for (let i = 0; i < microCount; i++) {
     const mAngle = Math.random() * Math.PI * 2;
     const mDist = mainRadius * (2.2 + Math.random() * 1.5);
     const mx = cx + Math.cos(mAngle) * mDist;
     const my = cy + Math.sin(mAngle) * mDist;
-    const mSize = 1 + Math.random() * 4;
-    svg += `<circle class="droplet" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="${mSize.toFixed(1)}" fill="${reds[Math.floor(Math.random() * reds.length)]}" opacity="${(0.6 + Math.random() * 0.3).toFixed(2)}" style="animation-delay:${(0.3 + Math.random() * 0.6).toFixed(2)}s;transform-origin:${mx.toFixed(1)}px ${my.toFixed(1)}px"/>`;
+    const mSize = size * (0.003 + Math.random() * 0.009);
+    c.fillStyle = reds[Math.floor(Math.random() * reds.length)];
+    c.globalAlpha = 0.6 + Math.random() * 0.3;
+    c.beginPath();
+    c.arc(mx, my, mSize, 0, Math.PI * 2);
+    c.fill();
+    c.globalAlpha = 1;
   }
 
-  svg += `</svg>`;
-  return svg;
+  return off;
+}
+
+// ---- Boucle de rendu ----
+function renderBloodFrame() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  bctx.clearRect(0, 0, w, h);
+  // Copie du calque "figé"
+  bctx.drawImage(committedCanvas, 0, 0, w, h);
+
+  const now = performance.now();
+  for (let i = animatingSplats.length - 1; i >= 0; i--) {
+    const s = animatingSplats[i];
+    const t = Math.min(1, (now - s.startTime) / s.duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const scale = 0.4 + eased * 0.6;
+    const alpha = Math.min(1, t * 2.5);
+
+    bctx.save();
+    bctx.globalAlpha = alpha;
+    bctx.translate(s.x, s.y);
+    bctx.rotate(s.rot);
+    bctx.scale(scale, scale);
+    bctx.drawImage(s.offscreen, -s.size / 2, -s.size / 2, s.size, s.size);
+    bctx.restore();
+
+    if (t >= 1) {
+      // Commit sur le calque figé
+      cctx.save();
+      cctx.translate(s.x, s.y);
+      cctx.rotate(s.rot);
+      cctx.drawImage(s.offscreen, -s.size / 2, -s.size / 2, s.size, s.size);
+      cctx.restore();
+      animatingSplats.splice(i, 1);
+    }
+  }
+
+  if (animatingSplats.length > 0) {
+    requestAnimationFrame(renderBloodFrame);
+  } else {
+    rafRunning = false;
+  }
+}
+
+function ensureRAF() {
+  if (!rafRunning) {
+    rafRunning = true;
+    requestAnimationFrame(renderBloodFrame);
+  }
+}
+
+function clearBlood() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  bctx.clearRect(0, 0, w, h);
+  cctx.clearRect(0, 0, w, h);
+  animatingSplats.length = 0;
 }
 
 function spawnSplat() {
-  const splat = document.createElement('div');
-  splat.className = 'blood-splat';
-
-  const x = Math.random() * 100;
-  const y = Math.random() * 100;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const x = Math.random() * w;
+  const y = Math.random() * h;
 
   const progress = Math.min(1, splatterCount / 12);
   const baseSize = 140 + progress * 480;
-  const size = baseSize + Math.random() * 220;
+  const size = Math.round(baseSize + Math.random() * 220);
 
-  splat.style.left = x + 'vw';
-  splat.style.top = y + 'vh';
-  splat.style.setProperty('--rot', (Math.random() * 360) + 'deg');
-
-  splat.innerHTML = buildSplatSVG(size);
-
-  bloodOverlay.appendChild(splat);
+  const off = createSplatOffscreen(size);
+  animatingSplats.push({
+    offscreen: off,
+    x, y, size,
+    rot: Math.random() * Math.PI * 2,
+    startTime: performance.now(),
+    duration: 700
+  });
   splatterCount++;
+  ensureRAF();
 }
 
 // =====================================================
@@ -886,7 +787,6 @@ function spawnSplat() {
 const pulseZone = document.getElementById('pulse-zone');
 const pulseInner = document.getElementById('pulse-inner');
 const progressText = document.getElementById('progress-text');
-const bloodOverlay = document.getElementById('blood-overlay');
 const bloodFlood = document.getElementById('blood-flood');
 const transitionVeil = document.getElementById('transition-veil');
 
@@ -898,8 +798,8 @@ function startHold(e) {
   holdStart = Date.now();
   splatterCount = 0;
 
-  bloodOverlay.innerHTML = '';
-  bloodOverlay.classList.add('active');
+  clearBlood();
+  bloodCanvas.classList.add('active');
 
   spawnSplat();
   scheduleNextSplat(400);
@@ -913,7 +813,7 @@ function scheduleNextSplat(delay) {
     if (!holdTimer) return;
     spawnSplat();
     const elapsed = (Date.now() - holdStart) / 1000;
-    const nextDelay = Math.max(150, 500 - elapsed * 80);
+    const nextDelay = Math.max(180, 500 - elapsed * 70);
     scheduleNextSplat(nextDelay);
   }, delay);
 }
@@ -933,19 +833,15 @@ function updateProgress() {
 }
 
 function triggerFlood() {
-  for (let i = 0; i < 6; i++) {
-    setTimeout(spawnSplat, i * 80);
+  for (let i = 0; i < 5; i++) {
+    setTimeout(spawnSplat, i * 90);
   }
-  setTimeout(() => {
-    bloodFlood.classList.add('active');
-  }, 600);
-  setTimeout(() => {
-    transitionVeil.classList.add('active');
-  }, 1600);
+  setTimeout(() => bloodFlood.classList.add('active'), 600);
+  setTimeout(() => transitionVeil.classList.add('active'), 1600);
   setTimeout(() => {
     revealPower();
-    bloodOverlay.classList.remove('active');
-    bloodOverlay.innerHTML = '';
+    bloodCanvas.classList.remove('active');
+    clearBlood();
     bloodFlood.classList.remove('active');
     setTimeout(() => transitionVeil.classList.remove('active'), 50);
   }, 2400);
@@ -957,9 +853,9 @@ function cancelHold(e) {
     holdTimer = null;
     clearTimeout(splatterInterval);
     progressText.textContent = 'Le rituel est interrompu...';
-    bloodOverlay.classList.remove('active');
+    bloodCanvas.classList.remove('active');
     setTimeout(() => {
-      bloodOverlay.innerHTML = '';
+      clearBlood();
       resetPulse();
     }, 800);
   }
@@ -971,8 +867,8 @@ function resetPulse() {
   progressText.textContent = '';
   if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
   if (splatterInterval) { clearTimeout(splatterInterval); splatterInterval = null; }
-  bloodOverlay.classList.remove('active');
-  bloodOverlay.innerHTML = '';
+  bloodCanvas.classList.remove('active');
+  clearBlood();
   bloodFlood.classList.remove('active');
   transitionVeil.classList.remove('active');
 }
@@ -1024,7 +920,7 @@ function revealPower() {
 function displayPower({ discipline, power }) {
   document.getElementById('clan-badge-result').textContent = selectedClan + ' — ' + CLANS[selectedClan].tagline;
   const disc = DISCIPLINES[discipline];
-  const html = `
+  document.getElementById('power-card').innerHTML = `
     <div class="discipline-label">${discipline}</div>
     <div class="power-name">${power.name}</div>
     <div class="power-level">Pouvoir de niveau 1</div>
@@ -1039,13 +935,10 @@ function displayPower({ discipline, power }) {
       Discipline ${disc.type.toLowerCase()} — Résonance : ${disc.resonance}
     </div>
   `;
-  document.getElementById('power-card').innerHTML = html;
 }
 
 function rerollPower() {
-  if (currentPower) {
-    excludedPowers.add(currentPower.key);
-  }
+  if (currentPower) excludedPowers.add(currentPower.key);
   restartRitual();
 }
 
