@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Éveil du Sang — V:tM V5</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    background: #0a0000;
+    color: #d9c9b5;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  body {
+    background: radial-gradient(ellipse at center, #1a0505 0%, #0a0000 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 20px 40px;
+    min-height: 100vh;
+    width: 100%;
+    animation: fadeIn 0.6s ease-in;
+  }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  h1 {
+    font-family: 'Georgia', serif;
+    font-size: 1.9rem;
+    color: #a01818;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    text-shadow: 0 0 12px rgba(160,24,24,0.4);
+    font-weight: normal;
+  }
+  h2 {
+    font-size: 1.3rem;
+    color: #c0a878;
+    text-align: center;
+    margin: 16px 0 20px;
+    letter-spacing: 2px;
+    font-weight: normal;
+    font-style: italic;
+  }
+  .subtitle {
+    text-align: center;
+    color: #8a7358;
+    font-style: italic;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+    max-width: 480px;
+  }
+
+  /* CLAN SELECTION */
+  .clan-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 10px;
+  }
+  .clan-btn {
+    background: linear-gradient(180deg, #1a0808 0%, #0f0303 100%);
+    border: 1px solid #3a1010;
+    color: #d9c9b5;
+    padding: 18px 12px;
+    font-family: inherit;
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .clan-btn:hover, .clan-btn:active {
+    background: linear-gradient(180deg, #3a0808 0%, #1a0303 100%);
+    border-color: #a01818;
+    color: #f0d8b8;
+    box-shadow: 0 0 15px rgba(160,24,24,0.4);
+  }
+
+  /* RITUAL SCREEN */
+  .ritual-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+  }
+  .clan-badge {
+    color: #a01818;
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+  }
+  .pulse-zone {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2a0505 0%, #100202 70%, transparent 100%);
+    border: 2px solid #3a1010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    touch-action: none;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+  .pulse-zone.active {
+    border-color: #a01818;
+  }
+  .pulse-zone.active::before,
+  .pulse-zone.active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid #a01818;
+    animation: heartbeat 1s ease-out infinite;
+  }
+  .pulse-zone.active::after {
+    animation-delay: 0.4s;
+  }
+  @keyframes heartbeat {
+    0% { transform: scale(1); opacity: 0.9; box-shadow: 0 0 20px rgba(160,24,24,0.5); }
+    50% { transform: scale(1.15); opacity: 0.6; box-shadow: 0 0 40px rgba(160,24,24,0.7); }
+    100% { transform: scale(1.35); opacity: 0; box-shadow: 0 0 60px rgba(160,24,24,0); }
+  }
+  .pulse-inner {
+    color: #c0a878;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .pulse-zone.active .pulse-inner {
+    color: #f0d8b8;
+    animation: innerPulse 1s ease-in-out infinite;
+  }
+  @keyframes innerPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .instruction {
+    color: #8a7358;
+    text-align: center;
+    margin-top: 40px;
+    font-style: italic;
+    font-size: 0.95rem;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+  .progress-text {
+    color: #a01818;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    margin-top: 20px;
+    min-height: 24px;
+  }
+  .back-btn {
+    margin-top: 30px;
+    background: transparent;
+    border: 1px solid #3a1010;
+    color: #8a7358;
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .back-btn:hover { color: #d9c9b5; border-color: #a01818; }
+
+  /* RESULT SCREEN */
+  .power-card {
+    background: linear-gradient(180deg, #1a0505 0%, #0a0101 100%);
+    border: 1px solid #3a1010;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 520px;
+    margin: 20px 0;
+    border-radius: 3px;
+    box-shadow: 0 0 30px rgba(160,24,24,0.2);
+    animation: revealCard 1s ease-out;
+  }
+  @keyframes revealCard {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .discipline-label {
+    color: #a01818;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .power-name {
+    color: #f0d8b8;
+    font-size: 1.6rem;
+    text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    font-style: italic;
+  }
+  .power-level {
+    color: #8a7358;
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .separator {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #3a1010, transparent);
+    margin: 16px 0;
+  }
+  .power-desc {
+    color: #d9c9b5;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    text-align: justify;
+  }
+  .power-detail {
+    margin: 10px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .power-detail strong {
+    color: #c0a878;
+    letter-spacing: 1px;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 20px;
+  }
+  .action-btn {
+    background: linear-gradient(180deg, #2a0808 0%, #150303 100%);
+    border: 1px solid #a01818;
+    color: #d9c9b5;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .action-btn:hover, .action-btn:active {
+    background: linear-gradient(180deg, #4a0808 0%, #2a0303 100%);
+    box-shadow: 0 0 15px rgba(160,24,24,0.5);
+  }
+  .action-btn.secondary {
+    background: transparent;
+    border-color: #3a1010;
+    color: #8a7358;
+  }
+  .exhausted-msg {
+    color: #a01818;
+    text-align: center;
+    font-style: italic;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #3a1010;
+    max-width: 520px;
+    width: 100%;
+  }
+  .ornament {
+    text-align: center;
+    color: #3a1010;
+    font-size: 1.5rem;
+    margin: 20px 0 10px;
+    letter-spacing: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: CLAN SELECTION -->
+<div class="screen active" id="screen-clans">
+  <div class="ornament">❦</div>
+  <h1>ÉVEIL DU SANG</h1>
+  <div class="ornament">❦</div>
+  <p class="subtitle">Découvrez le pouvoir qui sommeille dans vos veines.<br>Choisissez d'abord votre clan.</p>
+  <div class="clan-grid" id="clan-grid"></div>
+</div>
+
+<!-- SCREEN 2: RITUAL -->
+<div class="screen" id="screen-ritual">
+  <div class="clan-badge" id="clan-badge"></div>
+  <h2>Le Rituel</h2>
+  <div class="ritual-container">
+    <div class="pulse-zone" id="pulse-zone">
+      <div class="pulse-inner" id="pulse-inner">
+        Posez votre<br>doigt ici
+      </div>
+    </div>
+    <div class="progress-text" id="progress-text"></div>
+    <p class="instruction">Maintenez votre doigt sur le cercle pendant 5 secondes.<br>Écoutez le battement de votre Bête.</p>
+    <button class="back-btn" onclick="goToClanSelection()">← Changer de clan</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: RESULT -->
+<div class="screen" id="screen-result">
+  <div class="ornament">❦</div>
+  <div class="clan-badge" id="clan-badge-result"></div>
+  <div class="power-card" id="power-card"></div>
+  <div class="actions">
+    <button class="action-btn" id="reroll-btn" onclick="rerollPower()">Je possède déjà ce pouvoir</button>
+    <button class="action-btn secondary" onclick="restartRitual()">Recommencer le rituel</button>
+    <button class="action-btn secondary" onclick="goToClanSelection()">Changer de clan</button>
+  </div>
+  <div id="exhausted-container"></div>
+</div>
+
+<script>
+// =====================================================
+// DATA — Clans, Disciplines & Pouvoirs de niveau 1
+// Basé sur Vampire: la Mascarade 5e édition
+// =====================================================
+
+const DISCIPLINES = {
+  "Animalisme": {
+    surnoms: "faire sa princesse Disney, dressage, Bestiae sermo",
+    resonance: "Sang animal",
+    type: "Mentale",
+    powers: [
+      {
+        name: "Lier le Famulus",
+        desc: "Quand il crée un lien de sang avec un animal, le vampire peut le transformer en famulus. Il établit une connexion mentale avec la créature qui facilite l'utilisation d'autres pouvoirs d'Animalisme. La liaison ne permet pas de dialoguer, mais le vampire peut donner des ordres simples comme « ne bouge pas » ou « viens ici ». L'animal attaque pour défendre sa propre vie et celle de son maître.",
+        cout: "L'animal doit se nourrir du sang du personnage au cours de trois nuits distinctes (test d'Exaltation à chaque fois). Ensuite, une quantité négligeable de sang suffit à maintenir son état de goule.",
+        systeme: "Donner un ordre à l'animal requiert un jet de Charisme + Animaux (difficulté 2). La difficulté augmente pour les instructions complexes. Un vampire ne peut avoir qu'un seul famulus à la fois.",
+        duree: "Seule la mort libère le famulus. Tant qu'il reçoit du sang de vampire régulièrement, il ne vieillit pas."
+      },
+      {
+        name: "Sentir la Bête",
+        desc: "Le Descendant discerne la Bête qui se niche dans le cœur des mortels, des vampires et des autres créatures surnaturelles. Il apprécie leur nature, mesurant l'intensité de leur faim et de leur hostilité.",
+        cout: "Gratuit",
+        systeme: "Jet de Résolution + Animalisme contre Sang-froid + Subterfuge. En cas de victoire, l'utilisateur sent le degré d'agressivité de la cible et discerne sa Bête surnaturelle si elle en possède une (vampire, loup-garou). Une victoire critique révèle le type précis de créature ainsi que son niveau de Soif ou de Rage.",
+        duree: "Passif"
+      }
+    ]
+  },
+  "Auspex": {
+    surnoms: "voyeurisme, divination, augure, Anima visus",
+    resonance: "Flegmatique",
+    type: "Mentale",
+    powers: [
+      {
+        name: "Sens accrus",
+        desc: "Les sens du vampire acquièrent une acuité hors du commun. Il est capable de voir dans l'obscurité totale, d'entendre les fréquences des ultrasons et de sentir la peur que dégage une proie acculée.",
+        cout: "Gratuit",
+        systeme: "L'utilisateur ajoute autant de dés à ses groupements de perception que son niveau d'Auspex. Lorsqu'il est exposé à des sensations extrêmes (détonations, flashs, odeurs capiteuses), il doit réussir un jet d'Astuce + Résolution (difficulté 3+) sous peine de subir une surcharge sensorielle (–3 dés à tous les groupements de perception jusqu'à la fin de la scène).",
+        duree: "Jusqu'à ce que le personnage désactive le pouvoir."
+      },
+      {
+        name: "Sentir l'invisible",
+        desc: "Les sens du vampire s'alignent sur les dimensions au-delà du réel, ce qui lui permet de déceler des éléments autrement invisibles à l'œil nu : un vampire dissimulé par l'Occultation, un autre espionnant grâce à l'Auspex, un fantôme dans une salle, ou même les sorts latents de Sorcellerie du sang.",
+        cout: "Gratuit",
+        systeme: "Dès que le personnage tombe nez à nez avec un élément surnaturel imperceptible, le conteur effectue un jet caché d'Astuce + Auspex. Lorsqu'une entité tente de rester dissimulée, jet en opposition contre son groupement (par ex. Astuce + Occultation). En recherche active, jet de Résolution + Auspex.",
+        duree: "Passif"
+      }
+    ]
+  },
+  "Célérité": {
+    surnoms: "mettre la gomme, échappée belle, Velocitas",
+    resonance: "Bilieuse",
+    type: "Physique",
+    powers: [
+      {
+        name: "Grâce féline",
+        desc: "L'adresse et l'élégance du vampire surpassent celles des trapézistes de renommée internationale. Il est capable de marcher voire de courir sur des corniches et des câbles, conservant son équilibre sur les supports les plus étroits qui soient.",
+        cout: "Gratuit",
+        systeme: "Le personnage réussit automatiquement les jets basés sur la Dextérité ou l'Athlétisme pour conserver son équilibre. Ce pouvoir ne permet pas de se tenir sur des supports trop fragiles pour son poids.",
+        duree: "Passif"
+      },
+      {
+        name: "Réflexes éclair",
+        desc: "Bien que leur corps ne puisse pas défier les lois de la nature, les vampires dotés de ce pouvoir perçoivent les événements instantanément et réagissent avec une vivacité surhumaine. La trajectoire des projectiles leur apparaît avec une telle clarté qu'ils peuvent esquiver les flèches et les balles sans couvert disponible.",
+        cout: "Gratuit",
+        systeme: "Le personnage ne souffre pas du malus d'absence de couvert sur les groupements de défense contre les attaques à l'arme à feu. Il peut aussi réaliser gratuitement et à chaque tour une action mineure d'une valeur de deux dés au plus (par ex. préparer ou recharger son arme).",
+        duree: "Passif"
+      }
+    ]
+  },
+  "Domination": {
+    surnoms: "charmer les serpents, hypnose, Mentis imperium",
+    resonance: "Flegmatique",
+    type: "Mentale",
+    powers: [
+      {
+        name: "Brouillage mémoriel",
+        desc: "En prononçant l'ordre « Oublie ! », le vampire intime à sa victime d'oublier le moment présent et les quelques minutes qui l'ont précédé, ce qui suffit à couvrir le temps d'une rencontre fortuite ou d'un repas superficiel. La cible ne crée pas de nouveaux souvenirs en compensation et, si on insiste, elle se rend compte de son trou de mémoire.",
+        cout: "Gratuit",
+        systeme: "Aucun jet contre un mortel pris au dépourvu. Pour brouiller la mémoire d'un vampire ou d'une cible résistante : jet en opposition de Charisme + Domination contre Astuce + Résolution.",
+        duree: "Permanent"
+      },
+      {
+        name: "Contrainte",
+        desc: "Après avoir établi un contact visuel avec sa victime, le vampire lui donne un ordre qui tient dans une phrase, doit être réalisable en un tour et que sa cible suivra à la lettre. Le conteur est libre d'interpréter les consignes ambiguës pour qu'elles prennent un tour inattendu ou défavorable.",
+        cout: "Gratuit",
+        systeme: "Aucun jet contre un mortel pris au dépourvu. Pour commander un autre vampire, une victime qui résiste, ou une cible déjà influencée dans la scène : jet en opposition de Charisme + Domination contre Intelligence + Résolution. Jet obligatoire si l'ordre va à l'encontre de la nature profonde de la victime.",
+        duree: "Maximum une scène"
+      }
+    ]
+  },
+  "Force d'âme": {
+    surnoms: "fortification, peau de pierre, Resistentia",
+    resonance: "Atrabilaire",
+    type: "Physique",
+    powers: [
+      {
+        name: "Résilience",
+        desc: "Doté d'une endurance surnaturelle, le vampire transmet sa volonté d'acier à son corps.",
+        cout: "Gratuit",
+        systeme: "La jauge de santé du personnage est augmentée d'un montant égal à son niveau de Force d'âme.",
+        duree: "Passif"
+      },
+      {
+        name: "Un esprit résolu",
+        desc: "Le vampire acquiert une capacité mystique lui permettant de résister à toute influence, que ce soit par le biais de charmes naturels, de coercition ou de la ruse. Selon les individus, ce pouvoir se manifeste sous la forme d'une parfaite sérénité ou d'un entêtement hors du commun.",
+        cout: "Gratuit",
+        systeme: "Le personnage reçoit autant de dés supplémentaires que son niveau de Force d'âme sur les jets pour résister à la coercition, à l'intimidation, à la séduction ou à tout autre stratagème destiné à l'influencer contre sa volonté. Fonctionne également contre les capacités surnaturelles telles que Domination et Présence.",
+        duree: "Passif"
+      }
+    ]
+  },
+  "Occultation": {
+    surnoms: "mode furtif, sous couverture, voile, Occulto",
+    resonance: "Atrabilaire",
+    type: "Mentale",
+    powers: [
+      {
+        name: "Manteau d'ombre",
+        desc: "Le vampire se tient parfaitement immobile pour se fondre dans son environnement. Tant qu'il dispose d'une cachette, sans bouger et sans émettre le moindre bruit, seuls les outils technologiques et les pouvoirs surnaturels sont capables de déceler sa présence.",
+        cout: "Gratuit",
+        systeme: "Le pouvoir suit les règles générales d'Occultation. L'effet prend fin quand le personnage bouge ou qu'il se fait repérer par un quelconque moyen.",
+        duree: "Une scène"
+      },
+      {
+        name: "Silence de la mort",
+        desc: "Ce pouvoir populaire chez les Banu Haqim réduit au silence tous les sons que produit le vampire. Il ne fonctionne que sur l'ouïe, mais s'avère beaucoup plus efficace : le damné doit faire un vacarme d'enfer pour briser ce silence surnaturel.",
+        cout: "Gratuit",
+        systeme: "Le personnage fait taire les bruits de ses pas, de ses vêtements, de collisions mineures et tout autres sons qu'il produit avec son corps. Il reste indétectable à l'ouïe. Ce pouvoir n'élimine pas les sons produits autour du vampire (objets qu'il lance, portes qui claquent).",
+        duree: "Une scène"
+      }
+    ]
+  },
+  "Présence": {
+    surnoms: "vedettariat, subjugation, Sublimitas",
+    resonance: "Sanguine",
+    type: "Mentale",
+    powers: [
+      {
+        name: "Intimider",
+        desc: "Au lieu de séduire les gens, le vampire use de la Présence pour les repousser. Avec ce pouvoir, il émane de lui une aura de menace si terrible que les mortels évitent à tout prix d'attirer son attention. Même les autres Descendants réfléchissent à deux fois avant de tenter quoi que ce soit contre lui.",
+        cout: "Gratuit",
+        systeme: "Le niveau de Présence du personnage est ajouté à tous ses jets d'Intimidation. Il faut réussir un jet de Résolution + Sang-froid (difficulté 2) pour pouvoir l'attaquer. Ne peut pas être utilisé en même temps que Révérence.",
+        duree: "Une scène ou jusqu'à ce que le personnage y mette fin."
+      },
+      {
+        name: "Révérence",
+        desc: "Quiconque se trouve en présence du vampire éprouve soudain une admiration inexplicable pour lui. Les gens boivent ses paroles et acquiescent à tout va, alors même que leurs points de vue diffèrent sur certains sujets.",
+        cout: "Gratuit",
+        systeme: "Le niveau de Présence du personnage est ajouté à ses jets impliquant Persuasion et Représentation. Les cibles conscientes de l'influence peuvent résister par un jet de Sang-froid + Intelligence contre Manipulation + Présence. Ne peut pas être utilisé en même temps qu'Intimider.",
+        duree: "Une scène ou jusqu'à ce que le personnage y mette fin."
+      }
+    ]
+  },
+  "Protéisme": {
+    surnoms: "évolution, morphose, Mutatio",
+    resonance: "Sang d'animal",
+    type: "Physique",
+    powers: [
+      {
+        name: "Poids plume",
+        desc: "Léger comme une plume, le vampire réduit à peau de chagrin sa masse et sa densité corporelles, ce qui lui permet de contourner les détecteurs à pression ou d'amortir les dégâts provoqués par une chute, une collision ou une projection.",
+        cout: "Gratuit",
+        systeme: "Si le personnage a le temps de se préparer, aucun jet n'est requis. Activation en réaction (chute soudaine) : jet d'Astuce + Survie (difficulté 3). Tant que le pouvoir reste actif, le vampire est immunisé aux dégâts de chute, de collision et de projection. Il peut également éviter les systèmes de détection basés sur la pression.",
+        duree: "Aussi longtemps que le personnage le désire"
+      },
+      {
+        name: "Yeux de la bête",
+        desc: "Une lueur rouge surnaturelle flamboie dans les yeux du vampire. Grâce à elle, il voit dans l'obscurité la plus totale.",
+        cout: "Gratuit",
+        systeme: "Aucun jet nécessaire. Tant que le pouvoir est actif, le personnage ignore toutes les pénalités de vue liées à l'obscurité, y compris celles d'origine surnaturelle. En outre, grâce à l'aspect inhumain de ses yeux, il reçoit deux dés supplémentaires sur ses groupements d'Intimidation contre les mortels.",
+        duree: "Aussi longtemps que le personnage le désire"
+      }
+    ]
+  },
+  "Puissance": {
+    surnoms: "don d'Héraclès, force du sang, Percutio",
+    resonance: "Bilieuse",
+    type: "Physique",
+    powers: [
+      {
+        name: "Bond surhumain",
+        desc: "Doté d'une force impie qui n'est pas cantonnée à ses poings et à ses bras, le damné bondit bien plus haut et bien plus loin que n'importe quel mortel.",
+        cout: "Gratuit",
+        systeme: "Le personnage peut sauter verticalement d'un nombre de mètres égal à trois fois son niveau de Puissance, ou cinq fois son score de Puissance horizontalement. Il n'a pas besoin de prendre son élan pour réaliser cet exploit.",
+        duree: "Passif"
+      },
+      {
+        name: "Corps létal",
+        desc: "Avec ce pouvoir, le vampire inflige des blessures terrifiantes aux mortels. Il est capable de leur arracher la peau et de leur briser les os à mains nues.",
+        cout: "Gratuit",
+        systeme: "S'il le souhaite, le personnage peut causer des dégâts aggravés aux mortels avec ses attaques à mains nues. Celles-ci peuvent également ignorer un niveau d'armure par niveau de Puissance qu'il possède.",
+        duree: "Passif"
+      }
+    ]
+  },
+  "Sorcellerie du sang": {
+    surnoms: "Hocus pocus, thaumaturgie, Quietus",
+    resonance: "Sanguine",
+    type: "Sorcellerie",
+    powers: [
+      {
+        name: "Goût du sang",
+        desc: "En goûtant une goutte de sang, le vampire discerne les traits basiques de celui ou celle à qui il appartient.",
+        cout: "Gratuit",
+        systeme: "Jet de Résolution + Sorcellerie du sang (difficulté 3). En cas de victoire, il identifie si le sang appartient à un mortel, une goule, un vampire ou une autre créature surnaturelle. Pour un mortel, il découvre la Résonance et son intensité. Pour un vampire, il perçoit la Puissance du sang (et donc la fourchette de générations). Une victoire critique révèle si la cible a commis une diablerie et permet de préciser sa génération.",
+        duree: "Non applicable"
+      },
+      {
+        name: "Vitae corrosive",
+        desc: "Le vampire altère les propriétés d'une partie de son sang qui devient extrêmement corrosif pour les matières inertes. S'il dispose d'assez de temps et de vitae, il peut réduire la plupart des objets en boue fumante.",
+        cout: "Un ou plusieurs tests d'Exaltation",
+        systeme: "Aucun jet de compétence requis. Le personnage se concentre pendant un tour et force son sang à s'écouler d'une plaie. Chaque test d'Exaltation corrode la matière sur un rayon de 35 cm autour du point d'impact. Cinq minutes pour disparition totale (un peu plus pour les métaux mous). Marques et trous sur les alliages solides ; le conteur décide de leur fragilisation significative.",
+        duree: "Non applicable"
+      }
+    ]
+  }
+};
+
+const CLANS = {
+  "Ventrue":     { disciplines: ["Domination", "Force d'âme", "Présence"],           tagline: "Le clan des Rois" },
+  "Toreador":    { disciplines: ["Auspex", "Célérité", "Présence"],                  tagline: "Le clan des Divas" },
+  "Brujah":      { disciplines: ["Célérité", "Présence", "Puissance"],               tagline: "Le clan des Philosophes" },
+  "Nosferatu":   { disciplines: ["Animalisme", "Occultation", "Puissance"],          tagline: "Le clan des Horreurs" },
+  "Tremere":     { disciplines: ["Auspex", "Domination", "Sorcellerie du sang"],     tagline: "Le clan des Sorciers" },
+  "Gangrel":     { disciplines: ["Animalisme", "Force d'âme", "Protéisme"],          tagline: "Le clan de la Bête" },
+  "Malkavian":   { disciplines: ["Auspex", "Domination", "Occultation"],             tagline: "Le clan de la Lune" },
+  "Banu Haqim":  { disciplines: ["Sorcellerie du sang", "Célérité", "Occultation"],  tagline: "Les Juges" },
+  "Lasombra":    { disciplines: ["Domination", "Occultation", "Puissance"],          tagline: "Le clan des Gardiens" },
+  "Hecata":      { disciplines: ["Auspex", "Force d'âme", "Sorcellerie du sang"],    tagline: "La famille des morts" }
+};
+
+// =====================================================
+// STATE
+// =====================================================
+let selectedClan = null;
+let excludedPowers = new Set(); // stocke les "Discipline::Pouvoir" déjà refusés
+let currentPower = null;
+let holdTimer = null;
+let holdStart = null;
+
+// =====================================================
+// SETUP UI
+// =====================================================
+function initClanGrid() {
+  const grid = document.getElementById('clan-grid');
+  grid.innerHTML = '';
+  Object.keys(CLANS).forEach(clan => {
+    const btn = document.createElement('button');
+    btn.className = 'clan-btn';
+    btn.textContent = clan;
+    btn.onclick = () => selectClan(clan);
+    grid.appendChild(btn);
+  });
+}
+
+function selectClan(clan) {
+  selectedClan = clan;
+  excludedPowers = new Set();
+  document.getElementById('clan-badge').textContent = clan + ' — ' + CLANS[clan].tagline;
+  showScreen('screen-ritual');
+  resetPulse();
+}
+
+function goToClanSelection() {
+  selectedClan = null;
+  excludedPowers = new Set();
+  showScreen('screen-clans');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// =====================================================
+// PULSE / RITUAL
+// =====================================================
+const pulseZone = document.getElementById('pulse-zone');
+const pulseInner = document.getElementById('pulse-inner');
+const progressText = document.getElementById('progress-text');
+
+function startHold(e) {
+  e.preventDefault();
+  if (holdTimer) return;
+  pulseZone.classList.add('active');
+  pulseInner.innerHTML = 'Ne bougez<br>plus...';
+  holdStart = Date.now();
+  updateProgress();
+  holdTimer = setInterval(updateProgress, 100);
+}
+
+function updateProgress() {
+  const elapsed = (Date.now() - holdStart) / 1000;
+  const remaining = Math.max(0, 5 - elapsed);
+  if (remaining > 0) {
+    progressText.textContent = remaining.toFixed(1) + ' s';
+  } else {
+    clearInterval(holdTimer);
+    holdTimer = null;
+    progressText.textContent = '';
+    revealPower();
+  }
+}
+
+function cancelHold(e) {
+  if (holdTimer) {
+    clearInterval(holdTimer);
+    holdTimer = null;
+    progressText.textContent = 'Le rituel est interrompu...';
+    setTimeout(resetPulse, 1500);
+  }
+}
+
+function resetPulse() {
+  pulseZone.classList.remove('active');
+  pulseInner.innerHTML = 'Posez votre<br>doigt ici';
+  progressText.textContent = '';
+  if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+}
+
+pulseZone.addEventListener('touchstart', startHold, { passive: false });
+pulseZone.addEventListener('touchend', cancelHold);
+pulseZone.addEventListener('touchcancel', cancelHold);
+pulseZone.addEventListener('mousedown', startHold);
+pulseZone.addEventListener('mouseup', cancelHold);
+pulseZone.addEventListener('mouseleave', cancelHold);
+
+// =====================================================
+// REVEAL POWER
+// =====================================================
+function getAvailablePowers() {
+  const pool = [];
+  CLANS[selectedClan].disciplines.forEach(disc => {
+    DISCIPLINES[disc].powers.forEach(pw => {
+      const key = disc + '::' + pw.name;
+      if (!excludedPowers.has(key)) {
+        pool.push({ discipline: disc, power: pw, key: key });
+      }
+    });
+  });
+  return pool;
+}
+
+function revealPower() {
+  const available = getAvailablePowers();
+  if (available.length === 0) {
+    // Tous les pouvoirs ont été refusés
+    showScreen('screen-result');
+    document.getElementById('clan-badge-result').textContent = selectedClan + ' — ' + CLANS[selectedClan].tagline;
+    document.getElementById('power-card').style.display = 'none';
+    document.getElementById('reroll-btn').style.display = 'none';
+    document.getElementById('exhausted-container').innerHTML = 
+      '<div class="exhausted-msg">Vous connaissez déjà tous les pouvoirs de niveau 1 accessibles à votre clan. Votre Sang est riche en expérience.</div>';
+    return;
+  }
+  document.getElementById('exhausted-container').innerHTML = '';
+  document.getElementById('power-card').style.display = 'block';
+  document.getElementById('reroll-btn').style.display = 'block';
+
+  const pick = available[Math.floor(Math.random() * available.length)];
+  currentPower = pick;
+  displayPower(pick);
+  showScreen('screen-result');
+}
+
+function displayPower({ discipline, power }) {
+  document.getElementById('clan-badge-result').textContent = selectedClan + ' — ' + CLANS[selectedClan].tagline;
+  const disc = DISCIPLINES[discipline];
+  const html = `
+    <div class="discipline-label">${discipline}</div>
+    <div class="power-name">${power.name}</div>
+    <div class="power-level">Pouvoir de niveau 1</div>
+    <div class="separator"></div>
+    <div class="power-desc">${power.desc}</div>
+    <div class="separator"></div>
+    <div class="power-detail"><strong>COÛT :</strong> ${power.cout}</div>
+    <div class="power-detail"><strong>SYSTÈME :</strong> ${power.systeme}</div>
+    <div class="power-detail"><strong>DURÉE :</strong> ${power.duree}</div>
+    <div class="separator"></div>
+    <div class="power-detail" style="font-style:italic;color:#8a7358;font-size:0.82rem;">
+      Discipline ${disc.type.toLowerCase()} — Résonance : ${disc.resonance}
+    </div>
+  `;
+  document.getElementById('power-card').innerHTML = html;
+}
+
+function rerollPower() {
+  if (currentPower) {
+    excludedPowers.add(currentPower.key);
+  }
+  restartRitual();
+}
+
+function restartRitual() {
+  currentPower = null;
+  showScreen('screen-ritual');
+  resetPulse();
+}
+
+// =====================================================
+// INIT
+// =====================================================
+initClanGrid();
+</script>
+
+</body>
+</html>
